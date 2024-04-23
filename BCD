@@ -1,0 +1,115 @@
+# A "massa de bolo"
+
+-- CALCULAR A QUANTIDADE DE VENDAS POR FUNCIONARIO
+
+DELIMIER $$
+
+CREATE OR REPLACE FUNCTION fn_calc_vendas_por_func(func_id INT)
+RETURNS INT
+BEGIN
+
+END $$
+
+DELIMITER ;
+
+-------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE FUNCTION IF NOT exists fn_calc_idade(dt_nascimento DATE)
+RETURNS INT
+BEGIN
+	DECLARE idade INT;
+    DECLARE data_atual DATE;
+
+	SET data_atual = CURDATE();
+    
+    SET idade = YEAR(data_atual) - YEAR(dt_nascimento);
+	
+    IF MONTH(data_atual) < MONTH(dt_nascimento) OR
+		(
+			MONTH(data_atual) = MONTH(dt_nascimento) and
+            DAY(data_atual) < DAY(dt_nascimento)
+		) THEN
+        SET idade = idade - 1;
+	END IF;
+    RETURN idade;
+END $$
+
+DELIMITER ;
+
+--------------------------------------------------------------------------------
+
+SELECT
+	f.nome funcionario,
+    fn_calc_idade(f.data_contratacao) tempo_servico
+FROM
+	funcionario f;
+
+--------------------------------------------------------------------------------
+
+SELECT fn_ola_mundo('Cristiano') mensagem FROM DUAL;
+-------
+
+DELIMITER $$
+
+CREATE OR REPLACE FUNCTION
+	fn_ola_mundo(nome VARCHAR)
+RETUNS VARCHAR(60)
+BEGIN
+	RETURN CONCAT('Ola Mundo,', nome);
+END $$
+
+DELIMITER ;
+
+---------------------------------------------------------------------------------
+
+-- SELECT fn_ola_mundo('Cristiano') mensagem FROM DUAL;
+
+SELECT f.nome funcionario,
+	fn_ola_mundo(f.nome) mensagem
+FROM funcionario f;
+
+---------------------------------------------------------------------------------
+#Eu quero:
+
+SELECT count(*) FROM venda v WHERE v.funcionario_id = '1'
+
+-- CALCULAR A QUANTIDADE DE VENDAS POR FUNCIONARIO
+
+DELIMITER $$
+
+CREATE OR REPLACE FUNCTION fn_calc_vendas_por_func(func_id INT)
+RETURNS INT
+BEGIN
+	DECLARE total_vendas INT DEFAULT 0;
+    SELECT
+		COUNT(*) INT total_vendas
+	FROM
+		venda v
+	WHERE
+		v.funcionario_id = func_id;
+    
+    RETURNS total_vendas;
+END $$
+DELIMITER ;
+
+---------------------------------------------------------------------------------
+
+-- CALCULAR A QUANTIDADE DE VENDAS POR FUNCIONARIO
+
+DELIMITER $$
+
+CREATE OR REPLACE FUNCTION fn_calc_vendas_por_func(func_id INT)
+RETURNS INT
+BEGIN
+	DECLARE total_vendas INT DEFAULT 0;
+    SELECT
+		COUNT(*) INT total_vendas
+	FROM
+		venda v
+	WHERE
+		v.funcionario_id = func_id;
+    
+    RETURNS total_vendas;
+END $$
+DELIMITER ;
